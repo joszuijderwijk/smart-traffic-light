@@ -1,1 +1,3 @@
-# mini-smart-traffic-light
+# Smart Traffic Light: Prototype
+
+Find more information on my blogpost: 
