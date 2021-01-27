@@ -23,7 +23,6 @@ const char* mqtt_password = "?";
 const char* mqtt_client_name = "mini_stoplicht";
 
 // animation intervals
-unsigned long animationTimer;
 const float startupInterval = 0.5;
 const float apInterval = 1;
 
