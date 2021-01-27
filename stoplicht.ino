@@ -16,7 +16,7 @@ const int PIN_ORANGE = 0;
 const int PIN_GREEN = 2;
 
 // MQTT settings
-const char* mqtt_server = "mqtt.orcaroeien.nl";
+const char* mqtt_server = "?";
 const int mqtt_port = 1883;
 const char* mqtt_username = "orca";
 const char* mqtt_password = "?";
