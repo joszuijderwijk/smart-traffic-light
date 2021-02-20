@@ -1,5 +1,3 @@
-#include <ESP8266httpUpdate.h>
-
 #include <ESP8266WiFi.h>             // Wifi library
 #include <WiFiClientSecure.h>
 #include <PubSubClient.h>            // MQTT library
