@@ -10,7 +10,7 @@
 
 
 // Only update to different versions of the firmware
-const String CURRENT_VERSION = "1.0";
+const String CURRENT_VERSION = "1.2";
 
 // Don't edit!
 const String NAME = "stoplicht";     // name of the firmware
@@ -78,8 +78,13 @@ bool orangeState = false;
 bool greenState = false;           // The state of the green light regardless of "showGreen"
 
 void setup() {
- Serial.begin(115200);  
+  Serial.begin(115200);  
  
+  Serial.print("Firmware: ");
+  Serial.println(NAME);
+  
+  Serial.print("Current version: ");
+  Serial.println(CURRENT_VERSION);
  
   // Set pin modes
   pinMode(PIN_GREEN, OUTPUT);
@@ -96,7 +101,17 @@ void setup() {
   wifiManager.addParameter(&custom_text);
   wifiManager.setAPCallback(configModeCallback); 
 
-  if (wifiManager.autoConnect("Orca Stoplicht", "haaldoor")){
+  // Reset config for use in debugging
+  // wifiManager.resetSettings();
+  
+  // Allow connecting to setup access point for 10 seconds before continuing
+  wifiManager.setConfigPortalTimeout(10);
+  wifiManager.setAPClientCheck(true);
+  if (!wifiManager.startConfigPortal("Orca Stoplicht Setup")) {
+    Serial.println("No connection to portal, continuing");
+  }
+  
+  if (wifiManager.autoConnect("Orca Stoplicht Setup")){
     isConnected = true;
     StopAnimation();
   }
@@ -113,13 +128,6 @@ void setup() {
   // configure updater
   ESPhttpUpdate.closeConnectionsOnUpdate(false);
   ESPhttpUpdate.setAuthorization("orca","<password>");
-
-  Serial.print("Firmware: ");
-  Serial.println(NAME);
-
-  
-  Serial.print("Current version: ");
-  Serial.println(CURRENT_VERSION);
 }
 
 
@@ -156,13 +164,13 @@ void reconnect() {
 
 // Handel inkomenden berichten af
 void callback(char* topic, byte* payload, unsigned int len) {
-
-  
-    String msg = ""; // payload
-    for (int i = 0; i < len; i++) {
-      msg += ((char)payload[i]);
-    }
-
+  String msg = ""; // payload
+  for (int i = 0; i < len; i++) {
+    msg += ((char)payload[i]);
+  }
+  Serial.print(topic);
+  Serial.print(": ");
+  Serial.println(msg);
   
   if ( strcmp(topic, "vvb/status") == 0 ){
     redState = (msg == "0");
@@ -429,6 +437,7 @@ void CheckUpdate() {
  
             case HTTP_UPDATE_OK:
                 Serial.println("HTTP_UPDATE_OK");
+                ESP.restart();
                 break;
         }
 
